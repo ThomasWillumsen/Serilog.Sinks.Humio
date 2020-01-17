@@ -32,7 +32,7 @@ namespace Serilog.Sinks.Humio
 
             this._tags = humioSinkConfiguration.Tags ?? new KeyValuePair<string, string>[0];
             this._textFormatter = textFormatter ?? new JsonFormatter(renderMessage: true);
-            this._uri = new Uri("$"{humioSinkConfiguration.Url}/api/v1/ingest/humio-structured");
+            this._uri = new Uri($"{humioSinkConfiguration.Url}/api/v1/ingest/humio-structured");
             this._token = humioSinkConfiguration.IngestToken;
         }
 
