@@ -32,5 +32,10 @@ namespace Serilog.Sinks.Humio
         /// https://docs.humio.com/ingesting-data/parsers/built-in-parsers/#serilog
         /// </summary>
         public ITextFormatter TextFormatter { get; set; } = new JsonFormatter(renderMessage: true);
+
+        /// <summary>
+        /// Optional set url for use with on-prem Humio
+        /// </summary>
+        public string Url { get; set; } = "https://cloud.humio.com";
     }
 }
