@@ -36,6 +36,6 @@ namespace Serilog.Sinks.Humio
         /// <summary>
         /// Optional set url for use with on-prem Humio
         /// </summary>
-        public string Url { get; set; }
+        public string Url { get; set; } = "https://cloud.humio.com";
     }
 }
