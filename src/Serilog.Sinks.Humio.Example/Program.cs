@@ -17,7 +17,7 @@ namespace Serilog.Sinks.Humio.Example
                         new KeyValuePair<string, string>("source", "ApplicationLog"),
                         new KeyValuePair<string, string>("environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
                     },
-                    IngestToken = "{token}",
+                    IngestToken = "{token}"
                 })
                 .WriteTo.Console()
                 .CreateLogger();

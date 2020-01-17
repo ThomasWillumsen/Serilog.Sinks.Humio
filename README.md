@@ -25,6 +25,7 @@ var log = new LoggerConfiguration()
         IngestToken = "{token}", // acquired from Humio cloud
         BatchSizeLimit = 50,
         Period = TimeSpan.FromSeconds(5),
+        Url = "https://myOnPremHumio.com", // for on-prem Humio
         Tags = new KeyValuePair<string, string>[]{
             new KeyValuePair<string, string>("host", "{my_host}"),
             new KeyValuePair<string, string>("source", "{my_application}"),
