@@ -38,9 +38,10 @@ namespace Serilog.Sinks.Humio
 
         protected override async Task EmitBatchAsync(IEnumerable<LogEvent> logEvents)
         {
-            var payload = PreparePayload(logEvents);
+            var batch = PrepareBatch(logEvents);
+
             var requestObj = new HttpRequestMessage(HttpMethod.Post, _uri);
-            requestObj.Content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+            requestObj.Content = new StringContent(JsonConvert.SerializeObject(batch), Encoding.UTF8, "application/json");
             requestObj.Headers.Add("Authorization", $"Bearer {_token}");
 
             var response = await HttpClient.SendAsync(requestObj);
@@ -48,7 +49,7 @@ namespace Serilog.Sinks.Humio
                 throw new Exception($"Failed to ship logs to Humio: {response.StatusCode} - {response.ReasonPhrase} - {await response.Content.ReadAsStringAsync()}");
         }
 
-        protected dynamic PreparePayload(IEnumerable<LogEvent> logEvents)
+        protected IEnumerable<HumioBatch> PrepareBatch(IEnumerable<LogEvent> logEvents)
         {
             var tagsObj = new ExpandoObject() as IDictionary<string, object>;
             _tags
@@ -58,23 +59,22 @@ namespace Serilog.Sinks.Humio
                 .ToList()
                 .ForEach(x => tagsObj[x.Key] = x.Value);
 
-            var payload = new[] {
-                new
+            var batch = new HumioBatch[] {
+                new HumioBatch
                 {
-                    tags = tagsObj,
-                    events = logEvents.Select(x => {
+                    Tags = tagsObj,
+                    Events = logEvents.Select(x => {
                         var sw = new StringWriter();
                         _textFormatter.Format(x, sw);
 
-                        return new {
-                            timestamp = x.Timestamp,
-                            attributes = JObject.Parse(sw.ToString())
+                        return new HumioLogEvent {
+                            Timestamp = x.Timestamp,
+                            Attributes = JObject.Parse(sw.ToString())
                         };
                     })
                 }
             };
-
-            return payload;
+            return batch;
         }
 
         protected override void Dispose(bool disposing)

@@ -19,7 +19,6 @@ namespace Serilog.Sinks.Humio.Example
                     },
                     IngestToken = "{token}"
                 })
-                .WriteTo.Console()
                 .CreateLogger();
 
             var position = new { Latitude = 25, Longitude = 134 };
