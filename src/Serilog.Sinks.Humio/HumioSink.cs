@@ -24,14 +24,14 @@ namespace Serilog.Sinks.Humio
         private readonly string _token;
         private static readonly HttpClient HttpClient = new HttpClient();
 
-        public HumioSink(HumioSinkConfiguration humioSinkConfiguration, ITextFormatter textFormatter = null)
+        public HumioSink(HumioSinkConfiguration humioSinkConfiguration)
             : base(humioSinkConfiguration.BatchSizeLimit, humioSinkConfiguration.Period)
         {
             if (humioSinkConfiguration == null)
                 throw new ArgumentNullException("humioSinkConfiguration cannot be null");
 
             this._tags = humioSinkConfiguration.Tags ?? new KeyValuePair<string, string>[0];
-            this._textFormatter = textFormatter ?? new JsonFormatter(renderMessage: true);
+            this._textFormatter = humioSinkConfiguration.TextFormatter ?? new JsonFormatter(renderMessage: true);
             this._uri = new Uri($"{humioSinkConfiguration.Url}/api/v1/ingest/humio-structured");
             this._token = humioSinkConfiguration.IngestToken;
         }
