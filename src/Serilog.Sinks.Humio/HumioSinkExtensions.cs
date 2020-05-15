@@ -4,7 +4,7 @@ namespace Serilog.Sinks.Humio
 {
     public static class HumioSinkExtensions
     {
-        public static LoggerConfiguration HumioSink(
+        public static LoggerConfiguration Humio(
                   this LoggerSinkConfiguration loggerConfiguration,
                   HumioSinkConfiguration sinkConfiguration)
         {

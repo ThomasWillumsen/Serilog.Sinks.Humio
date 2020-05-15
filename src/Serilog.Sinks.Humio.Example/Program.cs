@@ -9,7 +9,7 @@ namespace Serilog.Sinks.Humio.Example
         {
             var log = new LoggerConfiguration()
                 .MinimumLevel.Information()
-                .WriteTo.HumioSink(new HumioSinkConfiguration
+                .WriteTo.Humio(new HumioSinkConfiguration
                 {
                     BatchSizeLimit = 50,
                     Period = TimeSpan.FromSeconds(5),
