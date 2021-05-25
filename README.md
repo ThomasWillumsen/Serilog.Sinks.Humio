@@ -5,27 +5,24 @@ A Serilog sink that writes events in periodic batches to [Humio](https://www.hum
 **Platforms** - .NET Standard 2.0
 
 
-The sink takes care of formatting Serilog's structured logs into a format that Humio will interpret correctly using the structured approach in Humio's [Ingest API](https://docs.humio.com/api/ingest/#structured-data).
+The sink takes care of formatting Serilog's structured logs and sending them to Humio using the structured approach in Humio's [Ingest API](https://docs.humio.com/reference/api/ingest/#structured-data).
 
 ```csharp
-// Minimum default configuration
+// Minimum configuration
 var log = new LoggerConfiguration()
-    .WriteTo.HumioSink(new HumioSinkConfiguration
-    {
-        IngestToken = "{token}" // acquired from Humio cloud
-    })
+    .WriteTo.HumioSink("{token}") // ingest token is acquired from Humio cloud
     .CreateLogger();
 
 
 
-// Additional configuration with tags
+// Advanced configuration
 var log = new LoggerConfiguration()
     .WriteTo.HumioSink(new HumioSinkConfiguration
     {
-        IngestToken = "{token}", // acquired from Humio cloud
+        IngestToken = "{token}",
         BatchSizeLimit = 50,
         Period = TimeSpan.FromSeconds(5),
-        Url = "https://myOnPremHumio.com", // for on-prem Humio
+        Url = "https://myOnPremHumio.com", // for on-prem
         Tags = new KeyValuePair<string, string>[]{
             new KeyValuePair<string, string>("host", "{my_host}"),
             new KeyValuePair<string, string>("source", "{my_application}"),
