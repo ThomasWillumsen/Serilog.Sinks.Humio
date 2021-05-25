@@ -9,7 +9,7 @@ namespace Serilog.Sinks.Humio
     {
         /// <summary>
         /// Required.
-        /// https://docs.humio.com/ingesting-data/ingest-tokens/
+        /// https://docs.humio.com/docs/ingesting-data/ingest-tokens/
         /// </summary>
         public string IngestToken { get; set; }
 

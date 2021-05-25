@@ -16,7 +16,7 @@ using Serilog.Sinks.PeriodicBatching;
 
 namespace Serilog.Sinks.Humio
 {
-    public class HumioSink : PeriodicBatchingSink
+    internal class HumioSink : PeriodicBatchingSink
     {
         private readonly IEnumerable<KeyValuePair<string, string>> _tags;
         private readonly ITextFormatter _textFormatter;

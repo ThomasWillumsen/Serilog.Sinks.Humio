@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace Serilog.Sinks.Humio
 {
     [DataContract]
-    public class HumioBatch
+    internal class HumioBatch
     {
         [DataMember(Name = "tags")]
         public dynamic Tags { get; set; }
@@ -15,7 +15,7 @@ namespace Serilog.Sinks.Humio
     }
 
     [DataContract]
-    public class HumioLogEvent
+    internal class HumioLogEvent
     {
         [DataMember(Name = "timestamp")]
         public DateTimeOffset Timestamp { get; set; }
