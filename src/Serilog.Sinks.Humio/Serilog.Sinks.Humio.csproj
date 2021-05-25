@@ -3,13 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Serilog.Sinks.Humio</PackageId>
-    <Version>1.0.13</Version>
+    <PackageVersion>1.0.13</PackageVersion>
     <Authors>Thomas Leschley Andersen</Authors>
     <Description>Serilog.Sinks.Humio is a Nuget package that extends Serilog to support logging to Humio</Description>
-    <PackageTags>serilog;sink;humio;logging</PackageTags>
+    <PackageTags>serilog, sink, humio, logging</PackageTags>
     <PackageIcon>serilog-sink-nuget.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/ThomasLeschley/Serilog.Sinks.Humio</RepositoryUrl>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
