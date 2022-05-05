@@ -22,7 +22,9 @@ var log = new LoggerConfiguration()
         IngestToken = "{token}",
         BatchSizeLimit = 50,
         Period = TimeSpan.FromSeconds(5),
-        Url = "https://myOnPremHumio.com", // for on-prem
+        // Can be used for an on-premises hosted solution. 
+        // If you are using Humio Community edition the url must be set to https://cloud.community.humio.com
+        Url = "https://myOnPremHumio.com",
         Tags = new KeyValuePair<string, string>[]{
             new KeyValuePair<string, string>("host", "{my_host}"),
             new KeyValuePair<string, string>("source", "{my_application}"),

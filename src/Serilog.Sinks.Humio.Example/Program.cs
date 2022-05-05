@@ -7,26 +7,28 @@ namespace Serilog.Sinks.Humio.Example
     {
         static void Main(string[] args)
         {
-            var simpleLogger = BuildSimpleExampleLogger();
+            // the simple logger has been commented out because im using the free community edition. This needs a different URL which needs
+            // to be configured using the advanced initialization. RIP
+            // var simpleLogger = BuildSimpleExampleLogger();
             var advancedLogger = BuildAdvancedExampleLogger();
 
             var position = new { Latitude = 25, Longitude = 134 };
             var elapsedMs = 34;
-            simpleLogger.Information("Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
+            // simpleLogger.Information("Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
             advancedLogger.Information("Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
 
             var keepAliveForDebugging = Console.ReadLine();
         }
 
-        static ILogger BuildSimpleExampleLogger()
-        {
-            var logger = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .WriteTo.HumioSink("{token}")
-                .CreateLogger();
+        // static ILogger BuildSimpleExampleLogger()
+        // {
+        //     var logger = new LoggerConfiguration()
+        //         .MinimumLevel.Information()
+        //         .WriteTo.HumioSink("{token}")
+        //         .CreateLogger();
 
-            return logger;
-        }
+        //     return logger;
+        // }
 
         static ILogger BuildAdvancedExampleLogger()
         {
@@ -40,7 +42,8 @@ namespace Serilog.Sinks.Humio.Example
                         new KeyValuePair<string, string>("source", "ApplicationLog"),
                         new KeyValuePair<string, string>("environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
                     },
-                    IngestToken = "{token}"
+                    IngestToken = "{token}",
+                    Url = "https://cloud.community.humio.com"
                 })
                 .CreateLogger();
 

@@ -16,7 +16,7 @@ using Serilog.Sinks.PeriodicBatching;
 
 namespace Serilog.Sinks.Humio
 {
-    internal class HumioSink : PeriodicBatchingSink
+    internal class HumioSink : IBatchedLogEventSink
     {
         private readonly IEnumerable<KeyValuePair<string, string>> _tags;
         private readonly ITextFormatter _textFormatter;
@@ -25,7 +25,6 @@ namespace Serilog.Sinks.Humio
         private static readonly HttpClient HttpClient = new HttpClient();
 
         public HumioSink(HumioSinkConfiguration humioSinkConfiguration)
-            : base(humioSinkConfiguration.BatchSizeLimit, humioSinkConfiguration.Period)
         {
             if (humioSinkConfiguration == null)
                 throw new ArgumentNullException("humioSinkConfiguration cannot be null");
@@ -36,7 +35,7 @@ namespace Serilog.Sinks.Humio
             this._token = humioSinkConfiguration.IngestToken;
         }
 
-        protected override async Task EmitBatchAsync(IEnumerable<LogEvent> logEvents)
+        public async Task EmitBatchAsync(IEnumerable<LogEvent> logEvents)
         {
             var batch = PrepareBatch(logEvents);
 
@@ -48,6 +47,14 @@ namespace Serilog.Sinks.Humio
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception($"Failed to ship logs to Humio: {response.StatusCode} - {response.ReasonPhrase} - {await response.Content.ReadAsStringAsync()}");
         }
+
+
+
+        public Task OnEmptyBatchAsync()
+        {
+            return Task.CompletedTask;
+        }
+
 
         protected IEnumerable<HumioBatch> PrepareBatch(IEnumerable<LogEvent> logEvents)
         {
@@ -75,12 +82,6 @@ namespace Serilog.Sinks.Humio
                 }
             };
             return batch;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            HttpClient.Dispose();
-            base.Dispose(disposing);
         }
     }
 }

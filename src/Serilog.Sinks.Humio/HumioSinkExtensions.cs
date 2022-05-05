@@ -1,4 +1,6 @@
-﻿using Serilog.Configuration;
+﻿using System;
+using Serilog.Configuration;
+using Serilog.Sinks.PeriodicBatching;
 
 namespace Serilog.Sinks.Humio
 {
@@ -14,7 +16,12 @@ namespace Serilog.Sinks.Humio
                   HumioSinkConfiguration sinkConfiguration)
         {
             return loggerConfiguration.Sink(
-                new HumioSink(sinkConfiguration));
+                new PeriodicBatchingSink(
+                    new HumioSink(sinkConfiguration),
+                    new PeriodicBatchingSinkOptions{
+                        BatchSizeLimit = sinkConfiguration.BatchSizeLimit,
+                        Period = sinkConfiguration.Period
+                    }));
         }
 
         /// <summary>
@@ -27,9 +34,14 @@ namespace Serilog.Sinks.Humio
                   string ingestToken)
         {
             return loggerConfiguration.Sink(
-                new HumioSink(new HumioSinkConfiguration{
-                    IngestToken = ingestToken
-                }));
+                new PeriodicBatchingSink(
+                    new HumioSink(new HumioSinkConfiguration{
+                        IngestToken = ingestToken
+                    }),
+                    new PeriodicBatchingSinkOptions{
+                        BatchSizeLimit = 100,
+                        Period = TimeSpan.FromSeconds(2)
+                    }));
         }
     }
 }
