@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PackageId>Serilog.Sinks.Humio</PackageId>
-		<PackageVersion>1.1.2</PackageVersion>
+		<PackageVersion>1.1.3</PackageVersion>
 		<Authors>Thomas Leschley Andersen</Authors>
 		<Description>Serilog.Sinks.Humio is a Nuget package that extends Serilog to support logging to Humio</Description>
 		<PackageTags>serilog, sink, humio, logging</PackageTags>
