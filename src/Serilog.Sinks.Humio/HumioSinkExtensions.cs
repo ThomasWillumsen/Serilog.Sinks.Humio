@@ -43,5 +43,31 @@ namespace Serilog.Sinks.Humio
                         Period = TimeSpan.FromSeconds(2)
                     }));
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loggerConfiguration"></param>
+        /// <param name="ingestToken"></param>
+        /// <param name="url"></param>
+        /// <param name="batchSizeLimit"></param>
+        /// <param name="period"></param>
+        /// <returns></returns>
+        public static LoggerConfiguration HumioSink(
+                  this LoggerSinkConfiguration loggerConfiguration,
+                  string ingestToken, string url, int batchSizeLimit, TimeSpan period)
+        {
+            return loggerConfiguration.Sink(
+                new PeriodicBatchingSink(
+                    new HumioSink(new HumioSinkConfiguration
+                    {
+                        IngestToken = ingestToken,
+                        Url = url,
+                    }),
+                    new PeriodicBatchingSinkOptions
+                    {
+                        BatchSizeLimit = batchSizeLimit,
+                        Period = period
+                    }));
+        }
     }
 }
