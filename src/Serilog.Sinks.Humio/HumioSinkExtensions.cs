@@ -18,7 +18,8 @@ namespace Serilog.Sinks.Humio
             return loggerConfiguration.Sink(
                 new PeriodicBatchingSink(
                     new HumioSink(sinkConfiguration),
-                    new PeriodicBatchingSinkOptions{
+                    new PeriodicBatchingSinkOptions
+                    {
                         BatchSizeLimit = sinkConfiguration.BatchSizeLimit,
                         Period = sinkConfiguration.Period
                     }));
@@ -29,44 +30,22 @@ namespace Serilog.Sinks.Humio
         /// </summary>
         /// <param name="loggerConfiguration"></param>
         /// <param name="ingestToken">https://docs.humio.com/docs/ingesting-data/ingest-tokens/</param>
+        /// <param name="url">Defaults to https://cloud.humio.com. If using the free community edition set to https://cloud.community.humio.com</param>
         public static LoggerConfiguration HumioSink(
                   this LoggerSinkConfiguration loggerConfiguration,
-                  string ingestToken)
-        {
-            return loggerConfiguration.Sink(
-                new PeriodicBatchingSink(
-                    new HumioSink(new HumioSinkConfiguration{
-                        IngestToken = ingestToken
-                    }),
-                    new PeriodicBatchingSinkOptions{
-                        BatchSizeLimit = 100,
-                        Period = TimeSpan.FromSeconds(2)
-                    }));
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="loggerConfiguration"></param>
-        /// <param name="ingestToken"></param>
-        /// <param name="url"></param>
-        /// <param name="batchSizeLimit"></param>
-        /// <param name="period"></param>
-        /// <returns></returns>
-        public static LoggerConfiguration HumioSink(
-                  this LoggerSinkConfiguration loggerConfiguration,
-                  string ingestToken, string url, int batchSizeLimit, TimeSpan period)
+                  string ingestToken, string url = "https://cloud.humio.com", int batchSizeLimit = 100, TimeSpan? period = null)
         {
             return loggerConfiguration.Sink(
                 new PeriodicBatchingSink(
                     new HumioSink(new HumioSinkConfiguration
                     {
                         IngestToken = ingestToken,
-                        Url = url,
+                        Url = url
                     }),
                     new PeriodicBatchingSinkOptions
                     {
                         BatchSizeLimit = batchSizeLimit,
-                        Period = period
+                        Period = period ?? TimeSpan.FromSeconds(2)
                     }));
         }
     }

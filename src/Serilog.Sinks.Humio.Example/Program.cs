@@ -1,53 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Extensions.Configuration;
+using Serilog;
+using Serilog.Sinks.Humio;
 
-namespace Serilog.Sinks.Humio.Example
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .Build();
+
+var simpleLogger = BuildSimpleExampleLogger();
+var advancedLogger = BuildAdvancedExampleLogger();
+var loggerUsingSettingsConfiguration = BuildLoggerUsingSettingsConfiguration();
+
+var position = new { Latitude = 25, Longitude = 134 };
+var elapsedMs = 34;
+simpleLogger.Information("(simple) Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
+advancedLogger.Information("(advanced) Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
+loggerUsingSettingsConfiguration.Information("(settings configuration) Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
+
+var keepAliveForDebugging = Console.ReadLine();
+
+
+ILogger BuildSimpleExampleLogger()
 {
-    class Program
-    {
-        static void Main(string[] args)
+    var logger = new LoggerConfiguration()
+        .MinimumLevel.Information()
+        .WriteTo.HumioSink(Environment.GetEnvironmentVariable("HumioIngestToken"), "https://cloud.community.humio.com")
+        .CreateLogger();
+
+    return logger;
+}
+
+ILogger BuildAdvancedExampleLogger()
+{
+    var logger = new LoggerConfiguration()
+        .MinimumLevel.Information()
+        .WriteTo.HumioSink(new HumioSinkConfiguration
         {
-            // the simple logger has been commented out because im using the free community edition. This needs a different URL which needs
-            // to be configured using the advanced initialization. RIP
-            // var simpleLogger = BuildSimpleExampleLogger();
-            var advancedLogger = BuildAdvancedExampleLogger();
+            BatchSizeLimit = 50,
+            Period = TimeSpan.FromSeconds(5),
+            Tags = new KeyValuePair<string, string>[]{
+                new KeyValuePair<string, string>("source", "ApplicationLog"),
+                new KeyValuePair<string, string>("environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")!)
+            },
+            IngestToken = Environment.GetEnvironmentVariable("HumioIngestToken"),
+            Url = "https://cloud.community.humio.com"
+        })
+        .CreateLogger();
 
-            var position = new { Latitude = 25, Longitude = 134 };
-            var elapsedMs = 34;
-            // simpleLogger.Information("Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
-            advancedLogger.Information("Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
+    return logger;
+}
 
-            var keepAliveForDebugging = Console.ReadLine();
-        }
+ILogger BuildLoggerUsingSettingsConfiguration()
+{
+    var logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(configuration)
+        .Enrich.FromLogContext()
+        .CreateLogger();
 
-        // static ILogger BuildSimpleExampleLogger()
-        // {
-        //     var logger = new LoggerConfiguration()
-        //         .MinimumLevel.Information()
-        //         .WriteTo.HumioSink("{token}")
-        //         .CreateLogger();
-
-        //     return logger;
-        // }
-
-        static ILogger BuildAdvancedExampleLogger()
-        {
-            var logger = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .WriteTo.HumioSink(new HumioSinkConfiguration
-                {
-                    BatchSizeLimit = 50,
-                    Period = TimeSpan.FromSeconds(5),
-                    Tags = new KeyValuePair<string, string>[]{
-                        new KeyValuePair<string, string>("source", "ApplicationLog"),
-                        new KeyValuePair<string, string>("environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
-                    },
-                    IngestToken = "{token}",
-                    Url = "https://cloud.community.humio.com"
-                })
-                .CreateLogger();
-
-            return logger;
-        }
-    }
+    return logger;
 }
