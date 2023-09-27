@@ -21,4 +21,8 @@
 	<ItemGroup>
 		<None Include=".\Assets\serilog-sink-nuget.png" Pack="true" PackagePath="\"/>
 	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Serilog.Sinks.Humio.Tests" />
+	</ItemGroup>
 </Project>
