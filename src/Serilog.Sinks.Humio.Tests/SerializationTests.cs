@@ -4,7 +4,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Xunit.Abstractions;
-using JsonSerializer = System.Text.Json.JsonSerializer;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace Serilog.Sinks.Humio.Tests;
 
@@ -15,13 +15,18 @@ public class SerializationTests(ITestOutputHelper outputHelper)
     public void Serializing_with_NewtonsoftJson_and_SystemTextJson_should_give_same_result(Fixture fixture)
     {
         // Arrange
-        var sut = fixture.Create<HumioBatch>();
+        var sut = fixture.Build<HumioLogEvent>()
+                         .With(x => x.Attributes,
+                             () => new RawJson(
+                                 System.Text.Json.JsonSerializer.Serialize(
+                                     fixture.Create<Dictionary<string, string>>())))
+                         .Create<HumioBatch>();
 
         // Act
-        var newtonsoftJson = JsonConvert.SerializeObject(sut);
+        var newtonsoftJson = JsonConvert.SerializeObject(sut, new RawJsonConverter());
         outputHelper.Dump(newtonsoftJson, "Newtonsoft.Json");
 
-        var systemTextJson = JsonSerializer.Serialize(
+        var systemTextJson = System.Text.Json.JsonSerializer.Serialize(
             sut,
             new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         outputHelper.Dump(systemTextJson, "System.Text.Json");
@@ -35,5 +40,16 @@ public class SerializationTests(ITestOutputHelper outputHelper)
         JsonDocument.Parse(systemTextJson)
                     .Should().BeEquivalentTo(JsonDocument.Parse(newtonsoftJson),
                         o => o.Using(new JsonDocumentRule()));
+    }
+
+    private class RawJsonConverter : JsonConverter<RawJson>
+    {
+        public override RawJson? ReadJson(JsonReader reader, Type objectType, RawJson? existingValue,
+            bool hasExistingValue,
+            JsonSerializer serializer)
+            => throw new NotSupportedException("Converter does not support deserializing.");
+
+        public override void WriteJson(JsonWriter writer, RawJson? value, JsonSerializer serializer)
+            => writer.WriteRawValue(value?.Value);
     }
 }
