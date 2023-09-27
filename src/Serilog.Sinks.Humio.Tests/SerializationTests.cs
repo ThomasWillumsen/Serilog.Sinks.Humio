@@ -19,12 +19,12 @@ public class SerializationTests(ITestOutputHelper outputHelper)
 
         // Act
         var newtonsoftJson = JsonConvert.SerializeObject(sut);
-        Dump(newtonsoftJson, "Newtonsoft.Json");
+        outputHelper.Dump(newtonsoftJson, "Newtonsoft.Json");
 
         var systemTextJson = JsonSerializer.Serialize(
             sut,
             new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-        Dump(systemTextJson, "System.Text.Json");
+        outputHelper.Dump(systemTextJson, "System.Text.Json");
 
         // Assert
         newtonsoftJson
@@ -35,12 +35,5 @@ public class SerializationTests(ITestOutputHelper outputHelper)
         JsonDocument.Parse(systemTextJson)
                     .Should().BeEquivalentTo(JsonDocument.Parse(newtonsoftJson),
                         o => o.Using(new JsonDocumentRule()));
-    }
-
-    private void Dump(string value, string header)
-    {
-        outputHelper.WriteLine("################# " + header + " #################");
-        outputHelper.WriteLine(value);
-        outputHelper.WriteLine("################# /" + header + " #################");
     }
 }
