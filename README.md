@@ -9,8 +9,8 @@ The sink takes care of formatting Serilog's structured logs and sending them to 
 
 <br/>
 
-##### Simple configuration
-
+## Configuration
+**Simple**
 ```csharp
 var log = new LoggerConfiguration()
     .WriteTo.HumioSink("{token}") // ingest token is acquired from Humio cloud
@@ -19,8 +19,7 @@ var log = new LoggerConfiguration()
 
 <br/>
 
-##### Advanced configuration
-
+**Advanced configuration**
 ```csharp
 var log = new LoggerConfiguration()
     .WriteTo.HumioSink(new HumioSinkConfiguration
@@ -44,7 +43,7 @@ var log = new LoggerConfiguration()
 
 <br/>
 
-##### Using Serilog.Settings.Configuration
+**Using Serilog.Settings.Configuration**
 
 ```csharp
 var log = new LoggerConfiguration()
@@ -77,3 +76,7 @@ _Appsettings.json_
   }
 }
 ```
+
+## Newtonsoft.Json has been replaced in 2.0.0
+The sink now uses [System.Text.Json](https://docs.microsoft.com/en-us/dotnet/api/system.text.json) instead of [Newtonsoft.Json](https://www.newtonsoft.com/json) for serializing the log events. This is to reduce the number of third-party dependencies and to improve performance.
+The last version of the sink that uses Newtonsoft.Json is 1.1.4. There are no plans to support Newtonsoft.Json in the future.
