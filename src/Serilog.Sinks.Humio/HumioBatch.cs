@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -21,6 +21,6 @@ namespace Serilog.Sinks.Humio
         public DateTimeOffset Timestamp { get; set; }
 
         [DataMember(Name = "attributes")]
-        public dynamic Attributes { get; set; }
+        public RawJson Attributes { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
@@ -6,9 +6,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Json;
@@ -18,6 +17,9 @@ namespace Serilog.Sinks.Humio
 {
     internal class HumioSink : IBatchedLogEventSink
     {
+        private static readonly JsonSerializerOptions _jsonSerializerOptions
+            = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
         private readonly IEnumerable<KeyValuePair<string, string>> _tags;
         private readonly ITextFormatter _textFormatter;
         private readonly Uri _uri;
@@ -40,7 +42,7 @@ namespace Serilog.Sinks.Humio
             var batch = PrepareBatch(logEvents);
 
             var requestObj = new HttpRequestMessage(HttpMethod.Post, _uri);
-            requestObj.Content = new StringContent(JsonConvert.SerializeObject(batch), Encoding.UTF8, "application/json");
+            requestObj.Content = new StringContent(JsonSerializer.Serialize(batch, _jsonSerializerOptions), Encoding.UTF8, "application/json");
             requestObj.Headers.Add("Authorization", $"Bearer {_token}");
 
             var response = await HttpClient.SendAsync(requestObj);
@@ -76,7 +78,7 @@ namespace Serilog.Sinks.Humio
 
                         return new HumioLogEvent {
                             Timestamp = x.Timestamp,
-                            Attributes = JObject.Parse(sw.ToString())
+                            Attributes = new RawJson(sw.ToString())
                         };
                     })
                 }
