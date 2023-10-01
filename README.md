@@ -68,7 +68,7 @@ _Appsettings.json_
       {
         "Name": "HumioSink",
         "Args": {
-          "IngestToken": "581e8b6c-f5c3-4a65-a6ee-632f1165f906",
+          "IngestToken": "{token}",
           "Url": "https://cloud.community.humio.com"
         }
       }
