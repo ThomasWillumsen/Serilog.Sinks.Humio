@@ -15,6 +15,7 @@ var position = new { Latitude = 25, Longitude = 134 };
 var elapsedMs = 34;
 simpleLogger.Information("(simple) Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
 advancedLogger.Information("(advanced) Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
+advancedLogger.Warning("(advanced) This is a warning message");
 loggerUsingSettingsConfiguration.Information("(settings configuration) Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
 
 var keepAliveForDebugging = Console.ReadLine();
@@ -43,7 +44,8 @@ ILogger BuildAdvancedExampleLogger()
                 new KeyValuePair<string, string>("environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")!)
             },
             IngestToken = Environment.GetEnvironmentVariable("HumioIngestToken"),
-            Url = "https://cloud.community.humio.com"
+            Url = "https://cloud.community.humio.com",
+            RestrictedToMinimumLevel = Serilog.Events.LogEventLevel.Warning
         })
         .CreateLogger();
 

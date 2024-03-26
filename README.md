@@ -37,6 +37,7 @@ var log = new LoggerConfiguration()
             new KeyValuePair<string, string>("tag4", "some value"),
             // ...
         }
+        RestrictedToMinimumLevel = Serilog.Events.LogEventLevel.Warning
     })
     .CreateLogger();
 ```

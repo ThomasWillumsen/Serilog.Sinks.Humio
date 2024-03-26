@@ -5,6 +5,9 @@ using Serilog.Formatting.Json;
 
 namespace Serilog.Sinks.Humio
 {
+    /// <summary>
+    /// Configuration for Humio Sink
+    /// </summary>
     public class HumioSinkConfiguration
     {
         /// <summary>
@@ -38,5 +41,11 @@ namespace Serilog.Sinks.Humio
         /// Note that if you are using the community edition you need to set it to "https://cloud.community.humio.com".
         /// </summary>
         public string Url { get; set; } = "https://cloud.humio.com";
+
+        /// <summary>
+        /// The minimum log event level required in order to write an event to the sink. <br/>
+        /// Defaults to Verbose.
+        /// </summary>
+        public Events.LogEventLevel RestrictedToMinimumLevel { get; set; } = Events.LogEventLevel.Verbose;
     }
 }
