@@ -14,7 +14,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Serilog" Version="3.1.1" />
-		<PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="3.1.0" />
+		<PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="4.0.1" />
 		<PackageReference Include="System.Text.Json" Version="8.0.1" />
 	</ItemGroup>
 	
